@@ -1,5 +1,34 @@
 import Foundation
 
+enum FileSystem {}
+
+extension FileSystem {
+    struct File {
+        let name: String
+        let content: Data
+    }
+
+    struct Directory {
+        let name: String
+        let content: [Item]
+    }
+
+    enum Item {
+        case file(File)
+        case directory(Directory)
+    }
+
+    struct Playground {
+        let name: String
+        let manifest: [Item]
+
+        init(name: String, items: [Item]) {
+            self.name = name
+            self.manifest = items
+        }
+    }
+}
+
 public enum FileSystemError: Error {
     case couldNotCreateFile(atPath: String)
 }
@@ -21,6 +50,8 @@ extension FileSystemInteracting {
         return url
     }
 }
+
+// MARK: - FileManager Support -
 
 extension FileManager: FileSystemInteracting {
     public func createDirectory(at url: URL) throws {

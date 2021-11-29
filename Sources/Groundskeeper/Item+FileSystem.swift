@@ -1,6 +1,6 @@
 import Foundation
 
-extension Item {
+extension FileSystem.Item {
     func create(at root: URL, fileSystem: FileSystemInteracting) throws {
         switch self {
         case .file(let file):
