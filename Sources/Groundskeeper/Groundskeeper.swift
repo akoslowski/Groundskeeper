@@ -22,8 +22,7 @@ public struct Groundskeeper {
         let playgroundName = name ?? randomName()
         let rootURL = fileSystem.replaceTildeInFileURL(outputURL)
 
-        let pageName = "First Page"
-        let playground = try makePlayground(playgroundName, pageName: pageName)
+        let playground = try makePlayground(playgroundName, pageName: "First Page")
         try playground.create(at: rootURL, fileSystem: fileSystem)
 
         let playgroundRoot = rootURL.appendingPathComponent(playground.name)
