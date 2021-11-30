@@ -17,4 +17,8 @@ $ playground create TestingStuff
 # open playground with random name
 $ playground create | xargs open
 $ playground create | xargs xed
+
+# add a page to an existing playground
+$ playground add-page ~/playgrounds/GrumpyCaribou.playground
+$ playground add-page ~/playgrounds/GrumpyCaribou.playground "Pattern Matching"
 ```
