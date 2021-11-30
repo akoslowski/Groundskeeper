@@ -1,5 +1,18 @@
 import Foundation
 
+@FileSystemBuilder func makePlayground(_ playgroundName: String, pageName: String) throws -> FileSystem.Item {
+    try rootDirectory("\(playgroundName).playground") {
+        subDirectory("Sources")
+        subDirectory("Pages") {
+            subDirectory("\(pageName).xcplaygroundpage") {
+                FileSystem.Item.contentsSwift
+            }
+        }
+        try FileSystem.Item.playgroundContentWithSinglePage(pageName: pageName)
+        FileSystem.Item.playgroundXCWorkspace
+    }
+}
+
 extension FileSystem.Item {
     static func playgroundPage(named name: String) -> Self {
         .directory(
@@ -62,12 +75,7 @@ extension FileSystem.Item {
             .init(
                 name: "contents.xcplayground",
                 content: try encode(
-                    Content(
-                        version: "6.0",
-                        targetPlatform: "ios",
-                        buildActiveScheme: true,
-                        pages: [Page(name: pageName)]
-                    )
+                    Content(pages: [Page(name: pageName)])
                 )
             )
         )

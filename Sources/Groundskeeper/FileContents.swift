@@ -40,7 +40,7 @@ struct Content: Codable, DynamicNodeEncoding {
 
     let pages: Pages
 
-    init(version: String, targetPlatform: String, buildActiveScheme: Bool, pages: [Page]) {
+    init(version: String = "6.0", targetPlatform: String = "ios", buildActiveScheme: Bool = true, pages: [Page]) {
         self.version = version
         self.targetPlatform = targetPlatform
         self.buildActiveScheme = buildActiveScheme

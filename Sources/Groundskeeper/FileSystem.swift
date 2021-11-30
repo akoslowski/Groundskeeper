@@ -16,15 +16,12 @@ extension FileSystem {
     enum Item {
         case file(File)
         case directory(Directory)
-    }
 
-    struct Playground {
-        let name: String
-        let manifest: [Item]
-
-        init(name: String, items: [Item]) {
-            self.name = name
-            self.manifest = items
+        var name: String {
+            switch self {
+            case .file(let file): return file.name
+            case .directory(let directory): return directory.name
+            }
         }
     }
 }

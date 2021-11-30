@@ -2,38 +2,40 @@ import Foundation
 import XMLCoder
 
 public struct Groundskeeper {
+    /// File system abstraction for all interactions, like file- or directory creation
     let fileSystem: FileSystemInteracting
 
+    /// Designated initializer
+    ///
+    /// - Parameter fileSystem: File system abstraction for all interactions, like file- or directory creation
     public init(fileSystem: FileSystemInteracting) {
         self.fileSystem = fileSystem
     }
 
     /// Creates a new playground with a single page
+    ///
+    /// - Parameters:
+    ///   - name: Name of the new playground; defaults to a random name
+    ///   - outputURL: URL to the directory where the playground will be stored
+    /// - Returns: URL to the new playground
     public func createPlayground(with name: String?, outputURL: URL) throws -> URL {
         let playgroundName = name ?? randomName()
-        let fileName = "\(playgroundName).playground"
-        let pageName = "First Page"
-        let playground = FileSystem.Playground(
-            name: playgroundName,
-            items: [
-                .sources,
-                .pagesDirectory(pages: [.playgroundPage(named: pageName)]),
-                try .playgroundContentWithSinglePage(pageName: pageName),
-                .playgroundXCWorkspace
-            ]
-        )
-
         let rootURL = fileSystem.replaceTildeInFileURL(outputURL)
-        let playgroundRoot = rootURL.appendingPathComponent(fileName)
-        try fileSystem.createDirectory(at: playgroundRoot)
 
-        try playground.manifest.forEach {
-            try $0.create(at: playgroundRoot, fileSystem: fileSystem)
-        }
+        let pageName = "First Page"
+        let playground = try makePlayground(playgroundName, pageName: pageName)
+        try playground.create(at: rootURL, fileSystem: fileSystem)
 
+        let playgroundRoot = rootURL.appendingPathComponent(playground.name)
         return playgroundRoot
     }
 
+    /// Adds a new page to an existing playground
+    ///
+    /// - Parameters:
+    ///   - playgroundURL: URL to an existing playground
+    ///   - pageName: Optional name for the page; defaults to a random name
+    /// - Returns: URL to the existing, changed playground
     public func addPage(playgroundURL: URL, pageName: String?) throws -> URL {
         let rootURL = fileSystem.replaceTildeInFileURL(playgroundURL)
         let contentsURL = rootURL
