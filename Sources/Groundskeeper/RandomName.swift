@@ -12,6 +12,8 @@ public struct Configuration {
     public static var camelCased: Self { .init(separator: "", adjectiveCapitalized: false, nameCapitalized: true) }
 
     public static var capitalizedCamelCased: Self { .init(separator: "", adjectiveCapitalized: true, nameCapitalized: true) }
+
+    public static var capitalizedWhitespaced: Self { .init(separator: " ", adjectiveCapitalized: true, nameCapitalized: true) }
 }
 
 func formatted(_ adjective: String, _ name: String, configuration: Configuration = .camelCased) -> String {

@@ -41,7 +41,7 @@ public struct Groundskeeper {
         let data = try Data(contentsOf: contentsURL)
         let contents = try XMLDecoder().decode(Content.self, from: data)
 
-        let newPageName = pageName ?? uniqueString()
+        let newPageName = pageName ?? randomName(.capitalizedWhitespaced)
         let newContent = try contents.adding(Page(name: newPageName))
         let newData = try encode(newContent)
         try fileSystem.createFile(at: contentsURL, content: newData)
