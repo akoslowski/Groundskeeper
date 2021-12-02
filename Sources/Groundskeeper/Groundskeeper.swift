@@ -19,7 +19,7 @@ public struct Groundskeeper {
     ///   - outputURL: URL to the directory where the playground will be stored
     /// - Returns: URL to the new playground
     public func createPlayground(with name: String?, outputURL: URL) throws -> URL {
-        let playgroundName = name ?? randomName()
+        let playgroundName = name ?? randomName(.capitalizedCamelCased)
         let rootURL = fileSystem.replaceTildeInFileURL(outputURL)
 
         let playground = try makePlayground(playgroundName, pageName: "First Page")
