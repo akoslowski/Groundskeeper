@@ -41,13 +41,13 @@ struct Create: ParsableCommand {
     var name: String?
 
     @Option(help: "URL to the output path where the playground will be created. Defaults to ~/Downloads")
-    var outputPath: String?
+    var outputPath: String = "~/Downloads"
 
     @Flag(inversion: .prefixedNo, help: "Automatically open the playground after creation")
     var autoOpen: Bool = true
 
     func run() throws {
-        guard let url = URL(string: outputPath ?? "~/Downloads") else { throw GroundskeeperError.invalidURL }
+        guard let url = URL(string: outputPath) else { throw GroundskeeperError.invalidURL }
         let g = Groundskeeper(fileSystem: FileManager.default)
         let targetURL = try g.createPlayground(with: name, outputURL: url)
 
