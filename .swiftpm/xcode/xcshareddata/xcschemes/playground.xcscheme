@@ -77,6 +77,10 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "Fooball"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "create"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

@@ -7,7 +7,7 @@ public struct Configuration {
 
     public static var snakeCased: Self { .init(separator: "_", adjectiveCapitalized: false, nameCapitalized: false) }
 
-    public static var kebapCased: Self { .init(separator: "-", adjectiveCapitalized: false, nameCapitalized: false) }
+    public static var kebabCased: Self { .init(separator: "-", adjectiveCapitalized: false, nameCapitalized: false) }
 
     public static var camelCased: Self { .init(separator: "", adjectiveCapitalized: false, nameCapitalized: true) }
 

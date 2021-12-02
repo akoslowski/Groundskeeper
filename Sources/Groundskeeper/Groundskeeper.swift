@@ -51,9 +51,3 @@ public struct Groundskeeper {
         return rootURL
     }
 }
-
-// MARK: -
-
-func uniqueString(length: Int = 4) -> String {
-    UUID().uuidString.prefix(length).lowercased()
-}

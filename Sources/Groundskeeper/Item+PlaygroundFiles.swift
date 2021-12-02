@@ -25,26 +25,11 @@ extension FileSystem.Item {
         )
     }
 
-    static func pagesDirectory(pages: [FileSystem.Item]) -> Self {
-        .directory(
-            .init(
-                name: "Pages",
-                content: pages
-            )
-        )
-    }
-
-    static var sources: Self { .directory(.init(name: "Sources", content: [])) }
-
     static var contentsSwift: Self {
         .file(
             .init(
                 name: "Contents.swift",
-                content: Data("""
-                import Foundation
-
-                let greeting = "Hello, playground"
-                """.utf8)
+                content: SwiftCodeTemplate.swiftUIDefault
             )
         )
     }
