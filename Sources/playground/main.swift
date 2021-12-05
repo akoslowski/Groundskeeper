@@ -46,7 +46,7 @@ struct AddPage: ParsableCommand {
     @Argument(help: "Name of the new playground page. If no name is given, a random name will be used")
     var pageName: String?
 
-    @Flag(inversion: .prefixedNo, help: "Automatically open the playground after adding a pag using 'xed'")
+    @Flag(inversion: .prefixedNo, help: "Automatically open the playground after adding a page using 'xed'")
     var xed: Bool = true
 
     @Option(help: "Source code template for the playground page. Options are 'swift', 'swiftui' or a URL pointing to a file")
