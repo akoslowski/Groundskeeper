@@ -46,29 +46,18 @@ struct Create: ParsableCommand {
     @Flag(inversion: .prefixedNo, help: "Automatically open the playground after creation")
     var autoOpen: Bool = true
 
+    @Option(help: "Source code template for the playground page. Options are 'swift', 'swiftui' or a URL pointing to a file")
+    var template: SourceCodeTemplate = .swift
+
     func run() throws {
         guard let url = URL(string: outputPath) else { throw GroundskeeperError.invalidURL }
         let g = Groundskeeper(fileSystem: FileManager.default)
-        let targetURL = try g.createPlayground(with: name, outputURL: url)
+        let targetURL = try g.createPlayground(with: name, outputURL: url, sourceCodeTemplate: template)
 
         if autoOpen { openWithXcode(targetURL) }
 
         print(targetURL.path)
     }
-}
-
-func openWithXcode(_ url: URL) {
-    runProcess(launchPath: "/usr/bin/xed", arguments: [url.path])
-}
-
-func runProcess(launchPath: String, arguments: [String] = []) {
-    let task = Process()
-    task.launchPath = launchPath
-    task.arguments = arguments
-    task.standardOutput = Pipe()
-    task.standardError = Pipe()
-    task.launch()
-    task.waitUntilExit()
 }
 
 GroundskeeperCommand.main()

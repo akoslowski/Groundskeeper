@@ -1,14 +1,18 @@
 import Foundation
 
-@FileSystemBuilder func makePlayground(_ playgroundName: String, pageName: String) throws -> FileSystem.Item {
+@FileSystemBuilder func makePlayground(
+    _ playgroundName: String,
+    pageName: String,
+    sourceCodeTemplate: SourceCodeTemplate = .swift
+) throws -> FileSystem.Item {
     try rootDirectory("\(playgroundName).playground") {
         subDirectory("Sources")
-        subDirectory("Pages") {
-            subDirectory("\(pageName).xcplaygroundpage") {
-                FileSystem.Item.contentsSwift
+        try subDirectory("Pages") {
+            try subDirectory("\(pageName).xcplaygroundpage") {
+                try FileSystem.Item.contentsSwift(sourceCodeTemplate)
             }
         }
-        try FileSystem.Item.playgroundContentWithSinglePage(pageName: pageName)
+        try FileSystem.Item.contentsXCPlayground(pageName: pageName)
         FileSystem.Item.playgroundXCWorkspace
     }
 }
@@ -29,7 +33,16 @@ extension FileSystem.Item {
         .file(
             .init(
                 name: "Contents.swift",
-                content: SwiftCodeTemplate.swiftUIDefault
+                content: try! SourceCodeTemplate.swift.content()
+            )
+        )
+    }
+
+    static func contentsSwift(_ sourceCodeTemplate: SourceCodeTemplate) throws -> Self {
+        .file(
+            .init(
+                name: "Contents.swift",
+                content: try sourceCodeTemplate.content()
             )
         )
     }
@@ -55,7 +68,7 @@ extension FileSystem.Item {
         )
     }
 
-    static func playgroundContentWithSinglePage(pageName: String) throws -> Self {
+    static func contentsXCPlayground(pageName: String) throws -> Self {
         .file(
             .init(
                 name: "contents.xcplayground",

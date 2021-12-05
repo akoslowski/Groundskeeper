@@ -1,30 +1,40 @@
 import Foundation
 
-enum SwiftCodeTemplate {
-    static var swiftDefault: Data {
-        Data("""
-        import Foundation
+public enum SourceCodeTemplate {
+    case custom(fileAt: URL)
+    case swift
+    case swiftUI
 
-        let greeting = "Hello, playground"
-        """.utf8)
-    }
+    func content() throws -> Data {
+        switch self {
+        case .custom(fileAt: let url):
+            return try Data(contentsOf: url)
 
-    static var swiftUIDefault: Data {
-        Data(#"""
-        import SwiftUI
-        import PlaygroundSupport
+        case .swift:
+            return Data("""
+            import Foundation
 
-        struct DemoView: View {
-            let name: String
+            let greeting = "Hello, playground"
+            """.utf8)
 
-            var body: some View {
-                Text("Hello \(name)")
-                    .font(.largeTitle)
-                    .padding()
+        case .swiftUI:
+            return Data(#"""
+            import SwiftUI
+            import PlaygroundSupport
+
+            struct DemoView: View {
+                let name: String
+
+                var body: some View {
+                    Text("Hello \(name)")
+                        .font(.largeTitle)
+                        .padding()
+                }
             }
-        }
 
-        PlaygroundPage.current.liveView = UIHostingController(rootView: DemoView(name: "Paula"))
-        """#.utf8)
+            PlaygroundPage.current.liveView = UIHostingController(rootView: DemoView(name: "Paula"))
+            """#.utf8)
+        }
     }
+
 }

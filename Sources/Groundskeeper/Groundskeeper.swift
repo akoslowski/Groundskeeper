@@ -18,11 +18,19 @@ public struct Groundskeeper {
     ///   - name: Name of the new playground; defaults to a random name
     ///   - outputURL: URL to the directory where the playground will be stored
     /// - Returns: URL to the new playground
-    public func createPlayground(with name: String?, outputURL: URL) throws -> URL {
+    public func createPlayground(
+        with name: String?,
+        outputURL: URL,
+        sourceCodeTemplate: SourceCodeTemplate
+    ) throws -> URL {
         let playgroundName = name ?? randomName(.capitalizedCamelCased)
         let rootURL = fileSystem.replaceTildeInFileURL(outputURL)
 
-        let playground = try makePlayground(playgroundName, pageName: "First Page")
+        let playground = try makePlayground(
+            playgroundName,
+            pageName: "First Page",
+            sourceCodeTemplate: sourceCodeTemplate
+        )
         try playground.create(at: rootURL, fileSystem: fileSystem)
 
         let playgroundRoot = rootURL.appendingPathComponent(playground.name)
@@ -46,7 +54,8 @@ public struct Groundskeeper {
         let newContent = try contents.adding(Page(name: newPageName))
         let newData = try encode(newContent)
         try fileSystem.createFile(at: contentsURL, content: newData)
-        try FileSystem.Item.playgroundPage(named: newPageName).create(at: rootURL.appendingPathComponent("Pages"), fileSystem: fileSystem)
+        try FileSystem.Item.playgroundPage(named: newPageName)
+            .create(at: rootURL.appendingPathComponent("Pages"), fileSystem: fileSystem)
 
         return rootURL
     }

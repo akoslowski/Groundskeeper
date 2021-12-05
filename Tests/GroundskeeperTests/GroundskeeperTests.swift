@@ -9,7 +9,8 @@ final class GroundskeeperTests: XCTestCase {
         _ = try Groundskeeper(fileSystem: mock)
             .createPlayground(
                 with: "Foo",
-                outputURL: URL(fileURLWithPath: "/root/playgrounds")
+                outputURL: URL(fileURLWithPath: "/root/playgrounds"),
+                sourceCodeTemplate: .swift
             )
 
         XCTAssertEqual(mock.events.count, 8)
