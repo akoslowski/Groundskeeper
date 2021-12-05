@@ -5,10 +5,10 @@ public enum SourceCodeTemplate {
     case swift
     case swiftUI
 
-    func content() throws -> Data {
+    func content(contentProvider: (URL) throws -> Data) throws -> Data {
         switch self {
         case .custom(fileAt: let url):
-            return try Data(contentsOf: url)
+            return try contentProvider(url)
 
         case .swift:
             return Data("""

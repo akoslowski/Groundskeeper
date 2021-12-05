@@ -30,7 +30,7 @@ struct Create: ParsableCommand {
     func run() throws {
         guard let url = URL(string: outputPath) else { throw GroundskeeperError.invalidURL }
 
-        let targetURL = try Groundskeeper(fileSystem: FileManager.default)
+        let targetURL = try Groundskeeper(fileSystem: FileManager.default, fileContentProvider: fileContentProvider)
             .createPlayground(with: name, outputURL: url, sourceCodeTemplate: template)
 
         if xed { openWithXcode(targetURL) }
@@ -55,7 +55,7 @@ struct AddPage: ParsableCommand {
     func run() throws {
         guard let url = URL(string: playgroundPath) else { throw GroundskeeperError.invalidURL }
 
-        let targetURL = try Groundskeeper(fileSystem: FileManager.default)
+        let targetURL = try Groundskeeper(fileSystem: FileManager.default, fileContentProvider: fileContentProvider)
             .addPage(playgroundURL: url, pageName: pageName, sourceCodeTemplate: template)
 
         if xed { openWithXcode(targetURL) }

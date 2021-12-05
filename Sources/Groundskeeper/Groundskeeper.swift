@@ -5,11 +5,15 @@ public struct Groundskeeper {
     /// File system abstraction for all interactions, like file- or directory creation
     let fileSystem: FileSystemInteracting
 
+    /// function to provide data from a given URL, e.g. for reading a source code template, or any existing file
+    let fileContentProvider: (URL) throws -> Data
+
     /// Designated initializer
     ///
     /// - Parameter fileSystem: File system abstraction for all interactions, like file- or directory creation
-    public init(fileSystem: FileSystemInteracting) {
+    public init(fileSystem: FileSystemInteracting, fileContentProvider: @escaping (URL) throws -> Data) {
         self.fileSystem = fileSystem
+        self.fileContentProvider = fileContentProvider
     }
 
     /// Creates a new playground with a single page
@@ -29,7 +33,8 @@ public struct Groundskeeper {
         let playground = try makePlayground(
             playgroundName,
             pageName: "First Page",
-            sourceCodeTemplate: sourceCodeTemplate
+            sourceCodeTemplate: sourceCodeTemplate,
+            contentProvider: fileContentProvider
         )
         try playground.create(at: rootURL, fileSystem: fileSystem)
 
@@ -51,14 +56,18 @@ public struct Groundskeeper {
         let rootURL = fileSystem.replaceTildeInFileURL(playgroundURL)
         let contentsURL = rootURL
             .appendingPathComponent("contents.xcplayground")
-        let data = try Data(contentsOf: contentsURL)
+        let data = try fileContentProvider(contentsURL)
         let contents = try XMLDecoder().decode(Content.self, from: data)
 
         let newPageName = pageName ?? randomName(.capitalizedWhitespaced)
         let newContent = try contents.adding(Page(name: newPageName))
         let newData = try encode(newContent)
         try fileSystem.createFile(at: contentsURL, content: newData)
-        try FileSystem.Item.playgroundPage(named: newPageName, sourceCodeTemplate: sourceCodeTemplate)
+        try FileSystem.Item.xcplaygroundPage(
+            named: newPageName,
+            sourceCodeTemplate: sourceCodeTemplate,
+            contentProvider: fileContentProvider
+        )
             .create(at: rootURL.appendingPathComponent("Pages"), fileSystem: fileSystem)
 
         return rootURL

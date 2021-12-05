@@ -5,8 +5,10 @@ import XMLCoder
 
 final class GroundskeeperTests: XCTestCase {
     func testCreatePlayground() throws {
+        func fileContentMock(_ url: URL) throws -> Data { Data() }
+
         let mock = FileSystemMock()
-        _ = try Groundskeeper(fileSystem: mock)
+        _ = try Groundskeeper(fileSystem: mock, fileContentProvider: fileContentMock)
             .createPlayground(
                 with: "Foo",
                 outputURL: URL(fileURLWithPath: "/root/playgrounds"),
@@ -83,5 +85,49 @@ final class GroundskeeperTests: XCTestCase {
         let roundtrip = try XMLDecoder().decode(Content.self, from: encoded)
         XCTAssertEqual(roundtrip.version, content.version)
         XCTAssertEqual(roundtrip.pages.values.count, content.pages.values.count)
+    }
+
+    func testAddPageToPlayground() throws {
+        func fileContentMock(_ url: URL) throws -> Data {
+            switch url {
+            case "/root/playgrounds/Test.playground/contents.xcplayground":
+                return Data("""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <playground version="6.0" buildActiveScheme="true" target-platform="ios">
+                    <pages>
+                        <page name="ExistingPage" />
+                    </pages>
+                </playground>
+                """.utf8)
+
+            case "/template.swift":
+                return Data("""
+                // Swift content for the playground page
+                """.utf8)
+
+            default: return Data()
+            }
+        }
+
+        let mock = FileSystemMock()
+        _ = try Groundskeeper(fileSystem: mock, fileContentProvider: fileContentMock)
+            .addPage(
+                playgroundURL: "/root/playgrounds/Test.playground",
+                pageName: "AddedPage",
+                sourceCodeTemplate: .custom(fileAt: "/template.swift")
+            )
+
+        XCTAssertEqual(mock.events.count, 3)
+        XCTAssertEqual(try mock.createFileURL(at: 0), "/root/playgrounds/Test.playground/contents.xcplayground")
+
+        let newContent = try XMLCoder.XMLDecoder().decode(Content.self, from: try mock.createFileData(at: 0)!)
+        XCTAssertEqual(newContent.pages.values.count, 2)
+        XCTAssertEqual(newContent.pages.values[0].name, "ExistingPage")
+        XCTAssertEqual(newContent.pages.values[1].name, "AddedPage")
+
+        XCTAssertEqual(try mock.createDirectoryURL(at: 1), "/root/playgrounds/Test.playground/Pages/AddedPage.xcplaygroundpage")
+
+        XCTAssertEqual(try mock.createFileURL(at: 2), "/root/playgrounds/Test.playground/Pages/AddedPage.xcplaygroundpage/Contents.swift")
+        XCTAssertEqual(String(decoding: try mock.createFileData(at: 2)!, as: UTF8.self), "// Swift content for the playground page")
     }
 }

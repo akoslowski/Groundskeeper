@@ -3,13 +3,14 @@ import Foundation
 @FileSystemBuilder func makePlayground(
     _ playgroundName: String,
     pageName: String,
-    sourceCodeTemplate: SourceCodeTemplate = .swift
+    sourceCodeTemplate: SourceCodeTemplate = .swift,
+    contentProvider: (URL) throws -> Data
 ) throws -> FileSystem.Item {
     try rootDirectory("\(playgroundName).playground") {
         subDirectory("Sources")
         try subDirectory("Pages") {
             try subDirectory("\(pageName).xcplaygroundpage") {
-                try FileSystem.Item.contentsSwift(sourceCodeTemplate)
+                try FileSystem.Item.contentsSwift(sourceCodeTemplate, contentProvider: contentProvider)
             }
         }
         try FileSystem.Item.contentsXCPlayground(pageName: pageName)
@@ -18,31 +19,22 @@ import Foundation
 }
 
 extension FileSystem.Item {
-    static func playgroundPage(named name: String, sourceCodeTemplate: SourceCodeTemplate) throws -> Self {
+    static func xcplaygroundPage(named name: String, sourceCodeTemplate: SourceCodeTemplate, contentProvider: (URL) throws -> Data) throws -> Self {
         .directory(
             .init(
                 name: "\(name).xcplaygroundpage",
                 content: [
-                    try .contentsSwift(sourceCodeTemplate)
+                    try .contentsSwift(sourceCodeTemplate, contentProvider: contentProvider)
                 ]
             )
         )
     }
 
-//    static var contentsSwift: Self {
-//        .file(
-//            .init(
-//                name: "Contents.swift",
-//                content: try! SourceCodeTemplate.swift.content()
-//            )
-//        )
-//    }
-
-    static func contentsSwift(_ sourceCodeTemplate: SourceCodeTemplate) throws -> Self {
+    static func contentsSwift(_ sourceCodeTemplate: SourceCodeTemplate, contentProvider: (URL) throws -> Data) throws -> Self {
         .file(
             .init(
                 name: "Contents.swift",
-                content: try sourceCodeTemplate.content()
+                content: try sourceCodeTemplate.content(contentProvider: contentProvider)
             )
         )
     }

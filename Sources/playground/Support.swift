@@ -2,6 +2,10 @@ import Foundation
 import ArgumentParser
 import Groundskeeper
 
+func fileContentProvider(_ url: URL) throws -> Data {
+    try Data(contentsOf: url)
+}
+
 extension SourceCodeTemplate: ExpressibleByArgument {
     public init?(argument: String) {
         switch argument.lowercased() {
