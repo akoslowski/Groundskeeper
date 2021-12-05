@@ -15,7 +15,7 @@ struct GroundskeeperCommand: ParsableCommand {
 }
 
 struct Create: ParsableCommand {
-    @Argument(help: "Name of the new playground")
+    @Argument(help: "Name of the new playground. If no name is given, a random name will be used")
     var name: String?
 
     @Option(help: "URL to the output path where the playground will be created. Defaults to ~/Downloads")
@@ -42,7 +42,7 @@ struct AddPage: ParsableCommand {
     @Argument(help: "URL to the existing playground")
     var playgroundPath: String
 
-    @Argument(help: "Name of the new playground page")
+    @Argument(help: "Name of the new playground page. If no name is given, a random name will be used")
     var pageName: String?
 
     @Flag(inversion: .prefixedNo, help: "Automatically open the playground after adding a page")
