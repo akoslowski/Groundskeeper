@@ -40,7 +40,7 @@ struct Create: ParsableCommand {
 }
 
 struct AddPage: ParsableCommand {
-    @Argument(help: "URL to the existing playground")
+    @Argument(help: "URL to an existing playground")
     var playgroundPath: String
 
     @Argument(help: "Name of the new playground page. If no name is given, a random name will be used")
