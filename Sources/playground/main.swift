@@ -21,8 +21,8 @@ struct Create: ParsableCommand {
     @Option(help: "URL to the output path where the playground will be created. Defaults to ~/Downloads")
     var outputPath: String = "~/Downloads"
 
-    @Flag(inversion: .prefixedNo, help: "Automatically open the playground after creation")
-    var autoOpen: Bool = true
+    @Flag(inversion: .prefixedNo, help: "Automatically open the playground after creation using 'xed'")
+    var xed: Bool = true
 
     @Option(help: "Source code template for the playground page. Options are 'swift', 'swiftui' or a URL pointing to a file")
     var template: SourceCodeTemplate = .swift
@@ -33,7 +33,7 @@ struct Create: ParsableCommand {
         let targetURL = try Groundskeeper(fileSystem: FileManager.default)
             .createPlayground(with: name, outputURL: url, sourceCodeTemplate: template)
 
-        if autoOpen { openWithXcode(targetURL) }
+        if xed { openWithXcode(targetURL) }
 
         print(targetURL.path)
     }
@@ -46,8 +46,8 @@ struct AddPage: ParsableCommand {
     @Argument(help: "Name of the new playground page. If no name is given, a random name will be used")
     var pageName: String?
 
-    @Flag(inversion: .prefixedNo, help: "Automatically open the playground after adding a page")
-    var autoOpen: Bool = true
+    @Flag(inversion: .prefixedNo, help: "Automatically open the playground after adding a pag using 'xed'")
+    var xed: Bool = true
 
     @Option(help: "Source code template for the playground page. Options are 'swift', 'swiftui' or a URL pointing to a file")
     var template: SourceCodeTemplate = .swift
@@ -58,7 +58,7 @@ struct AddPage: ParsableCommand {
         let targetURL = try Groundskeeper(fileSystem: FileManager.default)
             .addPage(playgroundURL: url, pageName: pageName, sourceCodeTemplate: template)
 
-        if autoOpen { openWithXcode(targetURL) }
+        if xed { openWithXcode(targetURL) }
 
         print(targetURL.path)
     }
