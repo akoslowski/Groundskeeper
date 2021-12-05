@@ -43,7 +43,11 @@ public struct Groundskeeper {
     ///   - playgroundURL: URL to an existing playground
     ///   - pageName: Optional name for the page; defaults to a random name
     /// - Returns: URL to the existing, changed playground
-    public func addPage(playgroundURL: URL, pageName: String?) throws -> URL {
+    public func addPage(
+        playgroundURL: URL,
+        pageName: String?,
+        sourceCodeTemplate: SourceCodeTemplate
+    ) throws -> URL {
         let rootURL = fileSystem.replaceTildeInFileURL(playgroundURL)
         let contentsURL = rootURL
             .appendingPathComponent("contents.xcplayground")
@@ -54,7 +58,7 @@ public struct Groundskeeper {
         let newContent = try contents.adding(Page(name: newPageName))
         let newData = try encode(newContent)
         try fileSystem.createFile(at: contentsURL, content: newData)
-        try FileSystem.Item.playgroundPage(named: newPageName)
+        try FileSystem.Item.playgroundPage(named: newPageName, sourceCodeTemplate: sourceCodeTemplate)
             .create(at: rootURL.appendingPathComponent("Pages"), fileSystem: fileSystem)
 
         return rootURL

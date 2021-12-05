@@ -18,25 +18,25 @@ import Foundation
 }
 
 extension FileSystem.Item {
-    static func playgroundPage(named name: String) -> Self {
+    static func playgroundPage(named name: String, sourceCodeTemplate: SourceCodeTemplate) throws -> Self {
         .directory(
             .init(
                 name: "\(name).xcplaygroundpage",
                 content: [
-                    .contentsSwift
+                    try .contentsSwift(sourceCodeTemplate)
                 ]
             )
         )
     }
 
-    static var contentsSwift: Self {
-        .file(
-            .init(
-                name: "Contents.swift",
-                content: try! SourceCodeTemplate.swift.content()
-            )
-        )
-    }
+//    static var contentsSwift: Self {
+//        .file(
+//            .init(
+//                name: "Contents.swift",
+//                content: try! SourceCodeTemplate.swift.content()
+//            )
+//        )
+//    }
 
     static func contentsSwift(_ sourceCodeTemplate: SourceCodeTemplate) throws -> Self {
         .file(

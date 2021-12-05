@@ -14,28 +14,6 @@ struct GroundskeeperCommand: ParsableCommand {
         subcommands: [Create.self, AddPage.self])
 }
 
-struct AddPage: ParsableCommand {
-    @Argument(help: "URL to the existing playground")
-    var playgroundPath: String
-
-    @Argument(help: "Name of the new playground page")
-    var pageName: String?
-
-    @Flag(inversion: .prefixedNo, help: "Automatically open the playground after adding a page")
-    var autoOpen: Bool = true
-
-    func run() throws {
-        let url = URL(fileURLWithPath: playgroundPath)
-
-        let g = Groundskeeper(fileSystem: FileManager.default)
-        let targetURL = try g.addPage(playgroundURL: url, pageName: pageName)
-
-        if autoOpen { openWithXcode(targetURL) }
-
-        print(targetURL.path)
-    }
-}
-
 struct Create: ParsableCommand {
     @Argument(help: "Name of the new playground")
     var name: String?
@@ -53,6 +31,31 @@ struct Create: ParsableCommand {
         guard let url = URL(string: outputPath) else { throw GroundskeeperError.invalidURL }
         let g = Groundskeeper(fileSystem: FileManager.default)
         let targetURL = try g.createPlayground(with: name, outputURL: url, sourceCodeTemplate: template)
+
+        if autoOpen { openWithXcode(targetURL) }
+
+        print(targetURL.path)
+    }
+}
+
+struct AddPage: ParsableCommand {
+    @Argument(help: "URL to the existing playground")
+    var playgroundPath: String
+
+    @Argument(help: "Name of the new playground page")
+    var pageName: String?
+
+    @Flag(inversion: .prefixedNo, help: "Automatically open the playground after adding a page")
+    var autoOpen: Bool = true
+
+    @Option(help: "Source code template for the playground page. Options are 'swift', 'swiftui' or a URL pointing to a file")
+    var template: SourceCodeTemplate = .swift
+
+    func run() throws {
+        guard let url = URL(string: playgroundPath) else { throw GroundskeeperError.invalidURL }
+
+        let g = Groundskeeper(fileSystem: FileManager.default)
+        let targetURL = try g.addPage(playgroundURL: url, pageName: pageName, sourceCodeTemplate: template)
 
         if autoOpen { openWithXcode(targetURL) }
 
