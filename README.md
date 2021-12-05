@@ -1,12 +1,10 @@
 # groundskeeper
 
-groundsman | ˈɡraʊn(d)zmən |
+grounds·​keep·​er | \ ˈgrau̇n(d)z-ˌkē-pər | [Source](https://www.merriam-webster.com/dictionary/groundskeeper)
 
-noun (plural groundsmen) British
-
-a person who maintains a sports ground, a park, or the grounds of a school or other institution. North American term groundskeeper.
-
-`Groundskeeper` is a package to interact with Swift playgrounds (Version 6.0).
+Definition: 
+- a person who cares for the grounds of a usually large property (such as a sports field) 
+- `Groundskeeper` is a package to interact with Swift playgrounds (Version 6.0).
 
 ## Example usage
 
