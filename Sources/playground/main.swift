@@ -53,7 +53,7 @@ struct AddPage: ParsableCommand {
     var template: SourceCodeTemplate = .swift
 
     func run() throws {
-        guard let url = URL(string: playgroundPath) else { throw GroundskeeperError.invalidURL }
+        let url = URL(fileURLWithPath: playgroundPath)
 
         let targetURL = try Groundskeeper(fileSystem: FileManager.default, fileContentProvider: fileContentProvider)
             .addPage(playgroundURL: url, pageName: pageName, sourceCodeTemplate: template)
