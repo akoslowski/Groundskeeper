@@ -29,8 +29,9 @@ struct Create: ParsableCommand {
 
     func run() throws {
         guard let url = URL(string: outputPath) else { throw GroundskeeperError.invalidURL }
-        let g = Groundskeeper(fileSystem: FileManager.default)
-        let targetURL = try g.createPlayground(with: name, outputURL: url, sourceCodeTemplate: template)
+
+        let targetURL = try Groundskeeper(fileSystem: FileManager.default)
+            .createPlayground(with: name, outputURL: url, sourceCodeTemplate: template)
 
         if autoOpen { openWithXcode(targetURL) }
 
@@ -54,8 +55,8 @@ struct AddPage: ParsableCommand {
     func run() throws {
         guard let url = URL(string: playgroundPath) else { throw GroundskeeperError.invalidURL }
 
-        let g = Groundskeeper(fileSystem: FileManager.default)
-        let targetURL = try g.addPage(playgroundURL: url, pageName: pageName, sourceCodeTemplate: template)
+        let targetURL = try Groundskeeper(fileSystem: FileManager.default)
+            .addPage(playgroundURL: url, pageName: pageName, sourceCodeTemplate: template)
 
         if autoOpen { openWithXcode(targetURL) }
 
