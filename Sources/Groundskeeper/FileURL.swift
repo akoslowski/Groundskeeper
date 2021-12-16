@@ -33,6 +33,12 @@ public struct FileURL: CustomDebugStringConvertible {
         } else if path.starts(with: "./") {
             url = URL(fileURLWithPath: path.replacingOccurrences(of: "./", with: "\(fileSystem.currentDirectoryPath)/", options: .literal, range: path.range(of: "./")))
 
+        } else if path.starts(with: "../") {
+            url = URL(fileURLWithPath: fileSystem.currentDirectoryPath).appendingPathComponent(path)
+
+        } else if path == ".." {
+            url = URL(fileURLWithPath: fileSystem.currentDirectoryPath).appendingPathComponent(path)
+
         } else if path.starts(with: "/") {
             url = URL(fileURLWithPath: path)
 

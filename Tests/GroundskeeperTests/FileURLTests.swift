@@ -32,6 +32,16 @@ class FileURLTests: XCTestCase {
         XCTAssertEqual(fileURL.url.absoluteURL, URL(string: "file:///root/current_directory/some/path"))
     }
 
+    func testFileURLFromRelativePathWithDotDot() throws {
+        let fileURL = try FileURL(path: "..", fileSystem: fileSystem)
+        XCTAssertEqual(fileURL.url.absoluteURL, URL(string: "file:///root/current_directory/.."))
+    }
+
+    func testFileURLFromRelativePathWithDotDotSlash() throws {
+        let fileURL = try FileURL(path: "../some/path", fileSystem: fileSystem)
+        XCTAssertEqual(fileURL.url.absoluteURL, URL(string: "file:///root/current_directory/../some/path"))
+    }
+
     func testFileURLFromPathWithTilde() throws {
         let fileURL = try FileURL(path: "~", fileSystem: fileSystem)
         XCTAssertEqual(fileURL.url.absoluteURL, URL(string: "file:///root/current_directory"))
