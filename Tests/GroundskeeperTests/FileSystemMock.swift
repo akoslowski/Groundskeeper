@@ -14,7 +14,19 @@ enum FileSystemMockError: Error {
     case outOfBounds(index: Int, valid: Range<Int>)
 }
 
-final class FileSystemMock: FileSystemInteracting {
+final class FileSystemMock: FileSystemInteracting, FileSystemDirectoryProviding {
+
+    let homeDirectoryForCurrentUser: URL
+    let currentDirectoryPath: String
+
+    init(
+        homeDirectoryForCurrentUser: URL = URL(string: "file:///root")!,
+        currentDirectoryPath: String = "/root/current_directory"
+    ) {
+        self.homeDirectoryForCurrentUser = homeDirectoryForCurrentUser
+        self.currentDirectoryPath = currentDirectoryPath
+    }
+
     enum Event: Equatable {
         case createDirectory(URL)
         case createFile(URL, Data?)
@@ -57,8 +69,6 @@ final class FileSystemMock: FileSystemInteracting {
     }
 
     // MARK: - Conformance -
-
-    var homeDirectoryForCurrentUser: URL = URL(fileURLWithPath: "/root")
 
     func createDirectory(at: URL) throws {
         events.append(.createDirectory(at))
