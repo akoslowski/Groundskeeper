@@ -27,16 +27,16 @@ struct Create: ParsableCommand {
     @Option(help: "Source code template for the playground page. Options are 'swift', 'swiftui' or a URL pointing to content")
     var template: SourceCodeTemplate = .swift
 
-    func outputPathFromDefaults() -> URL? {
+    func outputPathFromDefaults() -> FileURL? {
         if CommandLine.arguments.contains("--output-path") == false,
            let defaultValue = Defaults()?.playgroundOutputPath {
-            return try? FileURL(path: defaultValue).url
+            return try? FileURL(path: defaultValue)
         }
         return nil
     }
 
     func run() throws {
-        var outputURL = try FileURL(path: outputPath).url
+        var outputURL = try FileURL(path: outputPath)
         if let defaultOutputURL = outputPathFromDefaults() {
             outputURL = defaultOutputURL
         }
@@ -71,7 +71,7 @@ struct AddPage: ParsableCommand {
     var template: SourceCodeTemplate = .swift
 
     func run() throws {
-        let url = try FileURL(path: playgroundPath).url
+        let url = try FileURL(path: playgroundPath)
 
         let targetURL = try Groundskeeper(fileSystem: FileManager.default, fileContentProvider: fileContentProvider)
             .addPage(playgroundURL: url, pageName: pageName, sourceCodeTemplate: template)
