@@ -31,21 +31,13 @@ public enum FileSystemError: Error {
 }
 
 public protocol FileSystemInteracting {
-    var homeDirectoryForCurrentUser: URL { get }
     func createDirectory(at: URL) throws
     func createFile(at: URL, content: Data?) throws
-
-    func replaceTildeInFileURL(_ url: URL) -> URL
 }
 
-extension FileSystemInteracting {
-    public func replaceTildeInFileURL(_ url: URL) -> URL {
-        if url.path.starts(with: "~/") {
-            let path = url.path.replacingOccurrences(of: "~/", with: "")
-            return URL(fileURLWithPath: path, relativeTo: homeDirectoryForCurrentUser)
-        }
-        return url
-    }
+public protocol FileSystemDirectoryProviding {
+    var homeDirectoryForCurrentUser: URL { get }
+    var currentDirectoryPath: String { get }
 }
 
 // MARK: - FileManager Support -
@@ -60,3 +52,5 @@ extension FileManager: FileSystemInteracting {
         if result == false { throw FileSystemError.couldNotCreateFile(atPath: url.path) }
     }
 }
+
+extension FileManager: FileSystemDirectoryProviding {}

@@ -50,3 +50,22 @@ OPTIONS:
   --version               Show the version.
   -h, --help              Show help information.
 ```
+
+## Customization
+
+### Change default output path when omitting `--output-path` option
+ 
+```bash
+# Write new default value
+▶ defaults write com.groundskeeper.playground GKPlaygroundOutputPath -string "~/Downloads"
+
+# Verify output path
+▶ defaults read com.groundskeeper.playground GKPlaygroundOutputPath
+
+# Remove default value
+▶ defaults delete com.groundskeeper.playground GKPlaygroundOutputPath
+
+# Remove all default values
+▶ defaults delete com.groundskeeper.playground
+```
+

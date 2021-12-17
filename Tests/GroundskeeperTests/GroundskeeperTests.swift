@@ -11,7 +11,7 @@ final class GroundskeeperTests: XCTestCase {
         _ = try Groundskeeper(fileSystem: mock, fileContentProvider: fileContentMock)
             .createPlayground(
                 with: "Foo",
-                outputURL: URL(fileURLWithPath: "/root/playgrounds"),
+                outputURL: FileURL(path: "/root/playgrounds"),
                 sourceCodeTemplate: .swift
             )
 
@@ -112,7 +112,7 @@ final class GroundskeeperTests: XCTestCase {
         let mock = FileSystemMock()
         _ = try Groundskeeper(fileSystem: mock, fileContentProvider: fileContentMock)
             .addPage(
-                playgroundURL: "/root/playgrounds/Test.playground",
+                playgroundURL: FileURL(path: "/root/playgrounds/Test.playground"),
                 pageName: "AddedPage",
                 sourceCodeTemplate: .custom(fileAt: "/template.swift")
             )
