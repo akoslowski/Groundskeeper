@@ -53,7 +53,6 @@ public struct Groundskeeper {
     public func addPage(
         playgroundURL: FileURL,
         pageName: String?,
-        targetPlatform: TargetPlatform,
         sourceCodeTemplate: SourceCodeTemplate
     ) throws -> URL {
         let rootURL = playgroundURL.url
@@ -68,7 +67,7 @@ public struct Groundskeeper {
         try fileSystem.createFile(at: contentsURL, content: newData)
         try FileSystem.Item.xcplaygroundPage(
             named: newPageName,
-            targetPlatform: targetPlatform,
+            targetPlatform: contents.targetPlatform,
             sourceCodeTemplate: sourceCodeTemplate,
             contentProvider: fileContentProvider
         )

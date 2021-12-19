@@ -115,7 +115,6 @@ final class GroundskeeperTests: XCTestCase {
             .addPage(
                 playgroundURL: FileURL(path: "/root/playgrounds/Test.playground"),
                 pageName: "AddedPage",
-                targetPlatform: .ios,
                 sourceCodeTemplate: .custom(fileAt: "/template.swift")
             )
 

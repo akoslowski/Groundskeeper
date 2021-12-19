@@ -74,9 +74,6 @@ struct AddPage: ParsableCommand {
     @Option(help: "Source code template for the playground page. Options are 'swift', 'swiftui' or a URL pointing to content")
     var template: SourceCodeTemplate = .swift
 
-    @Option(help: "Target platform for the new playground. Options are 'ios' or 'macos'")
-    var targetPlatform: TargetPlatform = .macos
-
     func run() throws {
         let url = try FileURL(path: playgroundPath)
 
@@ -87,7 +84,6 @@ struct AddPage: ParsableCommand {
             .addPage(
                 playgroundURL: url,
                 pageName: pageName,
-                targetPlatform: targetPlatform,
                 sourceCodeTemplate: template
             )
 
