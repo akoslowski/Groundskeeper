@@ -10,7 +10,7 @@ struct GroundskeeperCommand: ParsableCommand {
     static var configuration = CommandConfiguration(
         commandName: "playground",
         abstract: "A utility for performing actions on Swift playgrounds.",
-        version: "1.1.0",
+        version: "1.2.0",
         subcommands: [Create.self, AddPage.self])
 }
 
