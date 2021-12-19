@@ -12,6 +12,7 @@ final class GroundskeeperTests: XCTestCase {
             .createPlayground(
                 with: "Foo",
                 outputURL: FileURL(path: "/root/playgrounds"),
+                targetPlatform: .ios,
                 sourceCodeTemplate: .swift
             )
 
@@ -33,7 +34,7 @@ final class GroundskeeperTests: XCTestCase {
         let encoded = try encode(
             Content(
                 version: "6.0",
-                targetPlatform: "ios",
+                targetPlatform: .ios,
                 buildActiveScheme: true,
                 pages: [Page(name: "First Page")]
             )
@@ -114,6 +115,7 @@ final class GroundskeeperTests: XCTestCase {
             .addPage(
                 playgroundURL: FileURL(path: "/root/playgrounds/Test.playground"),
                 pageName: "AddedPage",
+                targetPlatform: .ios,
                 sourceCodeTemplate: .custom(fileAt: "/template.swift")
             )
 

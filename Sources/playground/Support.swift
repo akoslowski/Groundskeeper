@@ -6,6 +6,16 @@ func fileContentProvider(_ url: URL) throws -> Data {
     try Data(contentsOf: url)
 }
 
+extension TargetPlatform: ExpressibleByArgument {
+    public init?(argument: String) {
+        switch argument.lowercased() {
+        case "ios": self = .ios
+        case "macos": self = .macos
+        default: self = .macos
+        }
+    }
+}
+
 extension SourceCodeTemplate: ExpressibleByArgument {
     public init?(argument: String) {
         switch argument.lowercased() {

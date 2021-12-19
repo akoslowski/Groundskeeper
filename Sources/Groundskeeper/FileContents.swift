@@ -19,6 +19,10 @@ struct Pages: Codable {
     let values: [Page]
 }
 
+public enum TargetPlatform: String, Codable {
+    case ios, macos
+}
+
 struct Content: Codable, DynamicNodeEncoding {
     static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         switch key {
@@ -35,12 +39,11 @@ struct Content: Codable, DynamicNodeEncoding {
     }
 
     let version: String
-    let targetPlatform: String
+    let targetPlatform: TargetPlatform
     let buildActiveScheme: Bool
-
     let pages: Pages
 
-    init(version: String = "6.0", targetPlatform: String = "ios", buildActiveScheme: Bool = true, pages: [Page]) {
+    init(version: String = "6.0", targetPlatform: TargetPlatform = .macos, buildActiveScheme: Bool = true, pages: [Page]) {
         self.version = version
         self.targetPlatform = targetPlatform
         self.buildActiveScheme = buildActiveScheme

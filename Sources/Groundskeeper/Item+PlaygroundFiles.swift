@@ -3,6 +3,7 @@ import Foundation
 @FileSystemBuilder func makePlayground(
     _ playgroundName: String,
     pageName: String,
+    targetPlatform: TargetPlatform,
     sourceCodeTemplate: SourceCodeTemplate = .swift,
     contentProvider: (URL) throws -> Data
 ) throws -> FileSystem.Item {
@@ -10,31 +11,31 @@ import Foundation
         subDirectory("Sources")
         try subDirectory("Pages") {
             try subDirectory("\(pageName).xcplaygroundpage") {
-                try FileSystem.Item.contentsSwift(sourceCodeTemplate, contentProvider: contentProvider)
+                try FileSystem.Item.contentsSwift(targetPlatform: targetPlatform, sourceCodeTemplate: sourceCodeTemplate, contentProvider: contentProvider)
             }
         }
-        try FileSystem.Item.contentsXCPlayground(pageName: pageName)
+        try FileSystem.Item.contentsXCPlayground(pageName: pageName, targetPlatform: targetPlatform)
         FileSystem.Item.playgroundXCWorkspace
     }
 }
 
 extension FileSystem.Item {
-    static func xcplaygroundPage(named name: String, sourceCodeTemplate: SourceCodeTemplate, contentProvider: (URL) throws -> Data) throws -> Self {
+    static func xcplaygroundPage(named name: String, targetPlatform: TargetPlatform, sourceCodeTemplate: SourceCodeTemplate, contentProvider: (URL) throws -> Data) throws -> Self {
         .directory(
             .init(
                 name: "\(name).xcplaygroundpage",
                 content: [
-                    try .contentsSwift(sourceCodeTemplate, contentProvider: contentProvider)
+                    try .contentsSwift(targetPlatform: targetPlatform, sourceCodeTemplate: sourceCodeTemplate, contentProvider: contentProvider)
                 ]
             )
         )
     }
 
-    static func contentsSwift(_ sourceCodeTemplate: SourceCodeTemplate, contentProvider: (URL) throws -> Data) throws -> Self {
+    static func contentsSwift(targetPlatform: TargetPlatform, sourceCodeTemplate: SourceCodeTemplate, contentProvider: (URL) throws -> Data) throws -> Self {
         .file(
             .init(
                 name: "Contents.swift",
-                content: try sourceCodeTemplate.content(contentProvider: contentProvider)
+                content: try sourceCodeTemplate.content(targetPlatform: targetPlatform, contentProvider: contentProvider)
             )
         )
     }
@@ -60,12 +61,12 @@ extension FileSystem.Item {
         )
     }
 
-    static func contentsXCPlayground(pageName: String) throws -> Self {
+    static func contentsXCPlayground(pageName: String, targetPlatform: TargetPlatform) throws -> Self {
         .file(
             .init(
                 name: "contents.xcplayground",
                 content: try encode(
-                    Content(pages: [Page(name: pageName)])
+                    Content(targetPlatform: targetPlatform, pages: [Page(name: pageName)])
                 )
             )
         )

@@ -25,6 +25,7 @@ public struct Groundskeeper {
     public func createPlayground(
         with name: String?,
         outputURL: FileURL,
+        targetPlatform: TargetPlatform,
         sourceCodeTemplate: SourceCodeTemplate
     ) throws -> URL {
         let playgroundName = name ?? randomName(.capitalizedCamelCased)
@@ -33,6 +34,7 @@ public struct Groundskeeper {
         let playground = try makePlayground(
             playgroundName,
             pageName: "First Page",
+            targetPlatform: targetPlatform,
             sourceCodeTemplate: sourceCodeTemplate,
             contentProvider: fileContentProvider
         )
@@ -51,6 +53,7 @@ public struct Groundskeeper {
     public func addPage(
         playgroundURL: FileURL,
         pageName: String?,
+        targetPlatform: TargetPlatform,
         sourceCodeTemplate: SourceCodeTemplate
     ) throws -> URL {
         let rootURL = playgroundURL.url
@@ -65,6 +68,7 @@ public struct Groundskeeper {
         try fileSystem.createFile(at: contentsURL, content: newData)
         try FileSystem.Item.xcplaygroundPage(
             named: newPageName,
+            targetPlatform: targetPlatform,
             sourceCodeTemplate: sourceCodeTemplate,
             contentProvider: fileContentProvider
         )
