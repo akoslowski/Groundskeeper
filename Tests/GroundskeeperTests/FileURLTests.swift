@@ -44,7 +44,7 @@ class FileURLTests: XCTestCase {
 
     func testFileURLFromPathWithTilde() throws {
         let fileURL = try FileURL(path: "~", fileSystem: fileSystem)
-        XCTAssertEqual(fileURL.url, URL(string: "file:///root/current_directory"))
+        XCTAssertEqual(fileURL.url, URL(string: "file:///root"))
     }
 
     func testFileURLFromPathWithTildeSlash() throws {
