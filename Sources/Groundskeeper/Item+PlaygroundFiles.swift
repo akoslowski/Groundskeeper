@@ -11,10 +11,17 @@ import Foundation
         subDirectory("Sources")
         try subDirectory("Pages") {
             try subDirectory("\(pageName).xcplaygroundpage") {
-                try FileSystem.Item.contentsSwift(targetPlatform: targetPlatform, sourceCodeTemplate: sourceCodeTemplate, contentProvider: contentProvider)
+                try FileSystem.Item.contentsSwift(
+                    targetPlatform: targetPlatform,
+                    sourceCodeTemplate: sourceCodeTemplate,
+                    contentProvider: contentProvider
+                )
             }
         }
-        try FileSystem.Item.contentsXCPlayground(pageName: pageName, targetPlatform: targetPlatform)
+        try FileSystem.Item.contentsXCPlayground(
+            pageName: pageName,
+            targetPlatform: targetPlatform
+        )
         FileSystem.Item.playgroundXCWorkspace
     }
 }
@@ -25,7 +32,11 @@ extension FileSystem.Item {
             .init(
                 name: "\(name).xcplaygroundpage",
                 content: [
-                    try .contentsSwift(targetPlatform: targetPlatform, sourceCodeTemplate: sourceCodeTemplate, contentProvider: contentProvider)
+                    try .contentsSwift(
+                        targetPlatform: targetPlatform,
+                        sourceCodeTemplate: sourceCodeTemplate,
+                        contentProvider: contentProvider
+                    )
                 ]
             )
         )
@@ -35,7 +46,10 @@ extension FileSystem.Item {
         .file(
             .init(
                 name: "Contents.swift",
-                content: try sourceCodeTemplate.content(targetPlatform: targetPlatform, contentProvider: contentProvider)
+                content: try sourceCodeTemplate.content(
+                    targetPlatform: targetPlatform,
+                    contentProvider: contentProvider
+                )
             )
         )
     }
