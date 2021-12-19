@@ -10,7 +10,7 @@ struct GroundskeeperCommand: ParsableCommand {
     static var configuration = CommandConfiguration(
         commandName: "playground",
         abstract: "A utility for performing actions on Swift playgrounds.",
-        version: "1.1.0",
+        version: "1.2.0",
         subcommands: [Create.self, AddPage.self])
 }
 
@@ -26,6 +26,9 @@ struct Create: ParsableCommand {
 
     @Option(help: "Source code template for the playground page. Options are 'swift', 'swiftui' or a URL pointing to content")
     var template: SourceCodeTemplate = .swift
+
+    @Option(help: "Target platform for the new playground. Options are 'ios' or 'macos'")
+    var targetPlatform: TargetPlatform = .macos
 
     func outputPathFromDefaults() -> FileURL? {
         if CommandLine.arguments.contains("--output-path") == false,
@@ -48,6 +51,7 @@ struct Create: ParsableCommand {
             .createPlayground(
                 with: name,
                 outputURL: outputURL,
+                targetPlatform: targetPlatform,
                 sourceCodeTemplate: template
             )
 
@@ -73,8 +77,15 @@ struct AddPage: ParsableCommand {
     func run() throws {
         let url = try FileURL(path: playgroundPath)
 
-        let targetURL = try Groundskeeper(fileSystem: FileManager.default, fileContentProvider: fileContentProvider)
-            .addPage(playgroundURL: url, pageName: pageName, sourceCodeTemplate: template)
+        let targetURL = try Groundskeeper(
+            fileSystem: FileManager.default,
+            fileContentProvider: fileContentProvider
+        )
+            .addPage(
+                playgroundURL: url,
+                pageName: pageName,
+                sourceCodeTemplate: template
+            )
 
         if xed { openWithXcode(targetURL) }
 

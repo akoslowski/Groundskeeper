@@ -5,19 +5,19 @@ public enum SourceCodeTemplate {
     case swift
     case swiftUI
 
-    func content(contentProvider: (URL) throws -> Data) throws -> Data {
-        switch self {
-        case .custom(fileAt: let url):
+    func content(targetPlatform: TargetPlatform, contentProvider: (URL) throws -> Data) throws -> Data {
+        switch (self, targetPlatform) {
+        case (.custom(fileAt: let url), _):
             return try contentProvider(url)
 
-        case .swift:
+        case (.swift, _):
             return Data("""
             import Foundation
 
             let greeting = "Hello, playground"
             """.utf8)
 
-        case .swiftUI:
+        case (.swiftUI, .ios):
             return Data(#"""
             import SwiftUI
             import PlaygroundSupport
@@ -33,6 +33,23 @@ public enum SourceCodeTemplate {
             }
 
             PlaygroundPage.current.liveView = UIHostingController(rootView: DemoView(name: "Paula"))
+            """#.utf8)
+        case (.swiftUI, .macos):
+            return Data(#"""
+            import SwiftUI
+            import PlaygroundSupport
+
+            struct DemoView: View {
+                let name: String
+
+                var body: some View {
+                    Text("Hello \(name)")
+                        .font(.largeTitle)
+                        .padding()
+                }
+            }
+
+            PlaygroundPage.current.liveView = NSHostingController(rootView: DemoView(name: "Paula"))
             """#.utf8)
         }
     }
