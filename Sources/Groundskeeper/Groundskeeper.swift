@@ -1,6 +1,7 @@
 import Foundation
 import XMLCoder
 
+/// Groundskeeper provides an interface to interact with Swift playgrounds
 public struct Groundskeeper {
     /// File system abstraction for all interactions, like file- or directory creation
     let fileSystem: FileSystemInteracting
