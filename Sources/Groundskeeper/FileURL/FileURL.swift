@@ -9,7 +9,6 @@ public struct FileURL: CustomDebugStringConvertible {
     /// Protocol-conforming instance for relative directories
     let fileSystem: FileSystemDirectoryProviding
 
-
     /// Designated initializer
     ///
     /// - Parameters:
@@ -21,37 +20,53 @@ public struct FileURL: CustomDebugStringConvertible {
 
         if path.isEmpty { throw URLError(.badURL) }
 
+        let currentDirectory = URL(fileURLWithPath: fileSystem.currentDirectoryPath)
+
         if path.starts(with: "~/") {
-            url = fileSystem.homeDirectoryForCurrentUser.appendingPathComponent(path.replacingOccurrences(of: "~/", with: "", options: .literal, range: path.range(of: "~/")))
+            url = fileSystem
+                .homeDirectoryForCurrentUser
+                .appendingPathComponent(path.removingFirstOccurrence(of: "~/"))
 
         } else if path == "~" {
-            url = URL(fileURLWithPath: path.replacingOccurrences(of: "~", with: fileSystem.currentDirectoryPath))
+            url = fileSystem.homeDirectoryForCurrentUser
 
         } else if path == "." {
-            url = URL(fileURLWithPath: path.replacingOccurrences(of: ".", with: fileSystem.currentDirectoryPath))
+            url = currentDirectory
 
         } else if path.starts(with: "./") {
-            url = URL(fileURLWithPath: path.replacingOccurrences(of: "./", with: "\(fileSystem.currentDirectoryPath)/", options: .literal, range: path.range(of: "./")))
+            url = currentDirectory.appendingPathComponent(path.removingFirstOccurrence(of: "./"))
 
         } else if path.starts(with: "../") {
-            url = URL(fileURLWithPath: fileSystem.currentDirectoryPath).appendingPathComponent(path)
+            url = currentDirectory.appendingPathComponent(path)
 
         } else if path == ".." {
-            url = URL(fileURLWithPath: fileSystem.currentDirectoryPath).appendingPathComponent(path)
+            url = currentDirectory.appendingPathComponent(path)
 
         } else if path.starts(with: "/") {
             url = URL(fileURLWithPath: path)
 
         } else if path.starts(with: "file:") {
-            guard let url = URL(string: path) else { throw URLError(.badURL) }
-            self.url = url
+            url = try URL(filePath: path)
 
         } else {
-            url = URL(fileURLWithPath: fileSystem.currentDirectoryPath).appendingPathComponent(path)
+            url = currentDirectory.appendingPathComponent(path)
         }
     }
 
     public var debugDescription: String {
         url.absoluteString
+    }
+}
+
+extension String {
+    func removingFirstOccurrence(of string: String) -> String {
+        self.replacingOccurrences(of: string, with: "", options: .literal, range: self.range(of: string))
+    }
+}
+
+extension URL {
+    init(filePath: String) throws {
+        guard let url = URL(string: filePath) else { throw URLError(.badURL) }
+        self = url
     }
 }

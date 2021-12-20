@@ -80,7 +80,7 @@ extension FileSystem.Item {
             .init(
                 name: "contents.xcplayground",
                 content: try encode(
-                    Content(targetPlatform: targetPlatform, pages: [Page(name: pageName)])
+                    Content(targetPlatform: targetPlatform)
                 )
             )
         )

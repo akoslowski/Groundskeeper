@@ -62,9 +62,6 @@ public struct Groundskeeper {
         let contents = try XMLDecoder().decode(Content.self, from: data)
 
         let newPageName = pageName ?? randomName(.capitalizedWhitespaced)
-        let newContent = try contents.adding(Page(name: newPageName))
-        let newData = try encode(newContent)
-        try fileSystem.createFile(at: contentsURL, content: newData)
         try FileSystem.Item.xcplaygroundPage(
             named: newPageName,
             targetPlatform: contents.targetPlatform,
