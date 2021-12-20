@@ -18,18 +18,22 @@ final class FileSystemMock: FileSystemInteracting, FileSystemDirectoryProviding 
 
     let homeDirectoryForCurrentUser: URL
     let currentDirectoryPath: String
+    let itemExistenceProvider: (URL) -> Bool
 
     init(
         homeDirectoryForCurrentUser: URL = URL(string: "file:///root")!,
-        currentDirectoryPath: String = "/root/current_directory"
+        currentDirectoryPath: String = "/root/current_directory",
+        itemExistenceProvider: @escaping (URL) -> Bool = { _ in true }
     ) {
         self.homeDirectoryForCurrentUser = homeDirectoryForCurrentUser
         self.currentDirectoryPath = currentDirectoryPath
+        self.itemExistenceProvider = itemExistenceProvider
     }
 
     enum Event: Equatable {
         case createDirectory(URL)
         case createFile(URL, Data?)
+        case removeItem(URL)
     }
 
     var events: [Event] = []
@@ -38,14 +42,14 @@ final class FileSystemMock: FileSystemInteracting, FileSystemDirectoryProviding 
         let event = try event(at: index)
         switch event {
         case .createDirectory(let url): return url
-        case .createFile: throw FileSystemMockError.unexpectedEvent(event)
+        case .createFile, .removeItem: throw FileSystemMockError.unexpectedEvent(event)
         }
     }
 
     func createFileURL(at index: Int) throws -> URL {
         let event = try event(at: index)
         switch event {
-        case .createDirectory: throw FileSystemMockError.unexpectedEvent(event)
+        case .createDirectory, .removeItem: throw FileSystemMockError.unexpectedEvent(event)
         case .createFile(let url, _): return url
         }
     }
@@ -53,8 +57,16 @@ final class FileSystemMock: FileSystemInteracting, FileSystemDirectoryProviding 
     func createFileData(at index: Int) throws -> Data? {
         let event = try event(at: index)
         switch event {
-        case .createDirectory: throw FileSystemMockError.unexpectedEvent(event)
+        case .createDirectory, .removeItem: throw FileSystemMockError.unexpectedEvent(event)
         case .createFile(_, let data): return data
+        }
+    }
+
+    func removeItem(at index: Int) throws -> URL {
+        let event = try event(at: index)
+        switch event {
+        case .createDirectory, .createFile: throw FileSystemMockError.unexpectedEvent(event)
+        case .removeItem(let url): return url
         }
     }
 
@@ -76,5 +88,13 @@ final class FileSystemMock: FileSystemInteracting, FileSystemDirectoryProviding 
 
     func createFile(at: URL, content: Data?) throws {
         events.append(.createFile(at, content))
+    }
+
+    func removeItem(at: URL) throws {
+        events.append(.removeItem(at))
+    }
+
+    func itemExists(at: URL) -> Bool {
+        itemExistenceProvider(at)
     }
 }

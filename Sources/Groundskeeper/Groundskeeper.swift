@@ -56,10 +56,29 @@ public struct Groundskeeper {
         sourceCodeTemplate: SourceCodeTemplate
     ) throws -> URL {
         let rootURL = playgroundURL.url
-        let contentsURL = rootURL
-            .appendingPathComponent("contents.xcplayground")
+        let contentsURL = rootURL.appendingPathComponent("contents.xcplayground")
         let data = try fileContentProvider(contentsURL)
         let contents = try XMLDecoder().decode(Content.self, from: data)
+
+        let pagesURL = rootURL.appendingPathComponent("Pages")
+        let existingContentsURL = rootURL.appendingPathComponent("Contents.swift")
+        let isSinglePagePlayground = fileSystem.itemExists(at: pagesURL) == false && fileSystem.itemExists(at: existingContentsURL)
+        
+        if isSinglePagePlayground {
+            // In case of a single page playground, migrate to
+            // a multi-page playground before adding a new page
+            try FileSystem.Item.pagesDirectory.create(at: rootURL, fileSystem: fileSystem)
+
+            try FileSystem.Item.xcplaygroundPage(
+                named: "First Page",
+                targetPlatform: contents.targetPlatform,
+                sourceCodeTemplate: .custom(fileAt: existingContentsURL),
+                contentProvider: fileContentProvider
+            )
+                .create(at: pagesURL, fileSystem: fileSystem)
+
+            try fileSystem.removeItem(at: existingContentsURL)
+        }
 
         let newPageName = pageName ?? randomName(.capitalizedWhitespaced)
         try FileSystem.Item.xcplaygroundPage(
@@ -68,7 +87,7 @@ public struct Groundskeeper {
             sourceCodeTemplate: sourceCodeTemplate,
             contentProvider: fileContentProvider
         )
-            .create(at: rootURL.appendingPathComponent("Pages"), fileSystem: fileSystem)
+            .create(at: pagesURL, fileSystem: fileSystem)
 
         return rootURL
     }

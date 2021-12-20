@@ -107,4 +107,57 @@ final class GroundskeeperTests: XCTestCase {
         XCTAssertEqual(try mock.createFileURL(at: 1), "/root/playgrounds/Test.playground/Pages/AddedPage.xcplaygroundpage/Contents.swift")
         XCTAssertEqual(String(decoding: try mock.createFileData(at: 1)!, as: UTF8.self), "// Swift content for the playground page")
     }
+
+    func testAddPageToSinglePagePlayground() throws {
+        func fileContentMock(_ url: URL) throws -> Data {
+            switch url {
+            case "/root/playgrounds/Test.playground/contents.xcplayground":
+                return Data("""
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <playground version="6.0" buildActiveScheme="true" target-platform="ios" />
+                """.utf8)
+
+            case "/template.swift":
+                return Data("""
+                // Swift content for the playground page
+                """.utf8)
+
+            case "/root/playgrounds/Test.playground/Contents.swift":
+                return Data("""
+                // Existing single page Swift content
+                """.utf8)
+
+            default: return Data()
+            }
+        }
+
+        func itemExists(_ url: URL) -> Bool {
+            switch url {
+            case "/root/playgrounds/Test.playground/Pages": return false
+            case "/root/playgrounds/Test.playground/Contents.swift": return true
+            default: return false
+            }
+        }
+
+        let mock = FileSystemMock(itemExistenceProvider: itemExists)
+        _ = try Groundskeeper(fileSystem: mock, fileContentProvider: fileContentMock)
+            .addPage(
+                playgroundURL: FileURL(path: "/root/playgrounds/Test.playground"),
+                pageName: "AddedPage",
+                sourceCodeTemplate: .custom(fileAt: "/template.swift")
+            )
+
+        XCTAssertEqual(mock.events.count, 6)
+
+        XCTAssertEqual(try mock.createDirectoryURL(at: 0), "/root/playgrounds/Test.playground/Pages")
+        XCTAssertEqual(try mock.createDirectoryURL(at: 1), "/root/playgrounds/Test.playground/Pages/First Page.xcplaygroundpage")
+        XCTAssertEqual(try mock.createFileURL(at: 2), "/root/playgrounds/Test.playground/Pages/First Page.xcplaygroundpage/Contents.swift")
+        XCTAssertEqual(String(decoding: try mock.createFileData(at: 2)!, as: UTF8.self), "// Existing single page Swift content")
+
+        XCTAssertEqual(try mock.removeItem(at: 3), "/root/playgrounds/Test.playground/Contents.swift")
+
+        XCTAssertEqual(try mock.createDirectoryURL(at: 4), "/root/playgrounds/Test.playground/Pages/AddedPage.xcplaygroundpage")
+        XCTAssertEqual(try mock.createFileURL(at: 5), "/root/playgrounds/Test.playground/Pages/AddedPage.xcplaygroundpage/Contents.swift")
+        XCTAssertEqual(String(decoding: try mock.createFileData(at: 5)!, as: UTF8.self), "// Swift content for the playground page")
+    }
 }
