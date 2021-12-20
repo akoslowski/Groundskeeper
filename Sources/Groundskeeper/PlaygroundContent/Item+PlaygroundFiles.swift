@@ -85,4 +85,8 @@ extension FileSystem.Item {
             )
         )
     }
+
+    static var pagesDirectory: Self {
+        .directory(.init(name: "Pages", content: []))
+    }
 }

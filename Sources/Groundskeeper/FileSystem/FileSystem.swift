@@ -33,6 +33,8 @@ public enum FileSystemError: Error {
 public protocol FileSystemInteracting {
     func createDirectory(at: URL) throws
     func createFile(at: URL, content: Data?) throws
+    func removeItem(at: URL) throws
+    func itemExists(at: URL) -> Bool
 }
 
 public protocol FileSystemDirectoryProviding {
@@ -50,6 +52,10 @@ extension FileManager: FileSystemInteracting {
     public func createFile(at url: URL, content: Data?) throws {
         let result = createFile(atPath: url.path, contents: content, attributes: nil)
         if result == false { throw FileSystemError.couldNotCreateFile(atPath: url.path) }
+    }
+
+    public func itemExists(at: URL) -> Bool {
+        fileExists(atPath: at.path)
     }
 }
 
