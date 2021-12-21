@@ -69,3 +69,9 @@ OPTIONS:
 ▶ defaults delete com.groundskeeper.playground
 ```
 
+### Change default target platform when omitting `--target-platform` option
+
+```bash
+# Write new default value
+▶ defaults write com.groundskeeper.playground GKPlaygroundTargetPlatform -string "iOS"
+```
