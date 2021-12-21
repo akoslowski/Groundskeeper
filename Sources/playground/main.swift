@@ -31,14 +31,14 @@ struct Create: ParsableCommand {
     var targetPlatform: TargetPlatform = .macos
 
     func run() throws {
-        let outputURL = try FileURL(path: outputPath).or { defaults in
+        let outputURL = try FileURL(path: outputPath).preferringDefaultValue {
             if CommandLine.arguments.contains("--output-path") { return nil }
-            return defaults?.outputURL
+            return Defaults()?.outputURL
         }
 
-        let targetPlatform = targetPlatform.or { defaults in
+        let targetPlatform = targetPlatform.preferringDefaultValue {
             if CommandLine.arguments.contains("--target-platform") { return nil }
-            return defaults?.targetPlatform
+            return Defaults()?.targetPlatform
         }
 
         let targetURL = try Groundskeeper(
