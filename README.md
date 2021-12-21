@@ -20,7 +20,7 @@ Definition:
 
 ```bash
 ▶ playground help create
-USAGE: playground create [<name>] [--output-path <output-path>] [--xed] [--no-xed] [--template <template>]
+USAGE: playground create [<name>] [--output-path <output-path>] [--xed] [--no-xed] [--template <template>] [--target-platform <target-platform>]
 
 ARGUMENTS:
   <name>                  Name of the new playground. If no name is given, a random name will be used
@@ -29,7 +29,10 @@ OPTIONS:
   --output-path <output-path>
                           URL to the output path where the playground will be created (default: ~/Downloads)
   --xed/--no-xed          Automatically open the playground after creation using 'xed' (default: true)
-  --template <template>   Source code template for the playground page. Options are 'swift', 'swiftui' or a URL pointing to content (default: swift)
+  --template <template>   Source code template for the playground page. Options are 'swift', 'swiftui' or a URL pointing to content
+                          (default: swift)
+  --target-platform <target-platform>
+                          Target platform for the new playground. Options are 'ios' or 'macos' (default: macos)
   --version               Show the version.
   -h, --help              Show help information.
 ```
