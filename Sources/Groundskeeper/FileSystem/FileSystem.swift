@@ -72,4 +72,8 @@ extension FileManager: FileSystemInteracting {
     }
 }
 
-extension FileManager: FileSystemDirectoryProviding {}
+extension FileManager: FileSystemDirectoryProviding {
+    public var homeDirectoryForCurrentUser: URL {
+        URL(fileURLWithPath: NSHomeDirectory(), isDirectory: true)
+    }
+}
