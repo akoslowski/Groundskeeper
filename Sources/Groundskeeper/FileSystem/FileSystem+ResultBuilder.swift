@@ -1,13 +1,15 @@
 import Foundation
 
-@resultBuilder
+// Github Actions currently run macOS 11 with Xcode 12.4 and Swift 5.3.2 where `@resultBuilder` was not yet available.
+@_functionBuilder
 struct FileSystemBuilder {
     static func buildBlock(_ directory: FileSystem.Directory) -> FileSystem.Item {
         .directory(directory)
     }
 }
 
-@resultBuilder
+// Github Actions currently run macOS 11 with Xcode 12.4 and Swift 5.3.2 where `@resultBuilder` was not yet available.
+@_functionBuilder
 struct DirectoryContentBuilder {
     static func buildBlock(_ components: FileSystem.Item...) -> [FileSystem.Item] {
         components
