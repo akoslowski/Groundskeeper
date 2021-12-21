@@ -10,7 +10,7 @@ struct GroundskeeperCommand: ParsableCommand {
     static var configuration = CommandConfiguration(
         commandName: "playground",
         abstract: "A utility for performing actions on Swift playgrounds.",
-        version: "1.5.0",
+        version: "1.6.0",
         subcommands: [Create.self, AddPage.self])
 }
 
@@ -30,18 +30,15 @@ struct Create: ParsableCommand {
     @Option(help: "Target platform for the new playground. Options are 'ios' or 'macos'")
     var targetPlatform: TargetPlatform = .macos
 
-    func outputPathFromDefaults() -> FileURL? {
-        if CommandLine.arguments.contains("--output-path") == false,
-           let defaultValue = Defaults()?.playgroundOutputPath {
-            return try? FileURL(path: defaultValue)
-        }
-        return nil
-    }
-
     func run() throws {
-        var outputURL = try FileURL(path: outputPath)
-        if let defaultOutputURL = outputPathFromDefaults() {
-            outputURL = defaultOutputURL
+        let outputURL = try FileURL(path: outputPath).or { defaults in
+            if CommandLine.arguments.contains("--output-path") { return nil }
+            return defaults?.outputURL
+        }
+
+        let targetPlatform = targetPlatform.or { defaults in
+            if CommandLine.arguments.contains("--target-platform") { return nil }
+            return defaults?.targetPlatform
         }
 
         let targetURL = try Groundskeeper(
