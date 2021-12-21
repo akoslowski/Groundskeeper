@@ -5,6 +5,19 @@ public enum SourceCodeTemplate {
     case swift
     case swiftUI
 
+    public init?(argument: String) {
+        switch argument.lowercased() {
+        case "swift": self = .swift
+        case "swiftui": self = .swiftUI
+        default:
+            if let url = URL(string: argument) {
+                self = .custom(fileAt: url)
+                return
+            }
+            return nil
+        }
+    }
+
     func content(targetPlatform: TargetPlatform, contentProvider: (URL) throws -> Data) throws -> Data {
         switch (self, targetPlatform) {
         case (.custom(fileAt: let url), _):
