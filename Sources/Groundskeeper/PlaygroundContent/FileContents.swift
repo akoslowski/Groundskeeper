@@ -5,6 +5,14 @@ import XMLCoder
 
 public enum TargetPlatform: String, Codable {
     case ios, macos
+
+    public init?(argument: String) {
+        switch argument.lowercased() {
+        case "ios": self = .ios
+        case "macos": self = .macos
+        default: self = .macos
+        }
+    }
 }
 
 struct Content: Codable, DynamicNodeEncoding {
