@@ -1,10 +1,10 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.3
 
 import PackageDescription
 
 let package = Package(
     name: "Groundskeeper",
-    platforms: [.macOS(.v10_12)],
+    platforms: [.macOS(.v10_11)],
     products: [
         .library(
             name: "Groundskeeper",
@@ -21,7 +21,7 @@ let package = Package(
         )
     ],
     targets: [
-        .executableTarget(
+        .target(
             name: "playground",
             dependencies: [
                 "Groundskeeper",
