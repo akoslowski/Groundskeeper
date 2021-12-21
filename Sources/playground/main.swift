@@ -36,7 +36,7 @@ struct Create: ParsableCommand {
             return Defaults()?.outputURL
         }
 
-        let targetPlatform = targetPlatform.preferringDefaultValue {
+        let _targetPlatform = targetPlatform.preferringDefaultValue {
             if CommandLine.arguments.contains("--target-platform") { return nil }
             return Defaults()?.targetPlatform
         }
@@ -48,7 +48,7 @@ struct Create: ParsableCommand {
             .createPlayground(
                 with: name,
                 outputURL: outputURL,
-                targetPlatform: targetPlatform,
+                targetPlatform: _targetPlatform,
                 sourceCodeTemplate: template
             )
 
