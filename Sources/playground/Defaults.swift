@@ -1,4 +1,5 @@
 import Foundation
+import Groundskeeper
 
 protocol KeyValueStorage {
     func string(forKey: String) -> String?
@@ -16,6 +17,22 @@ struct Defaults {
 
     var playgroundOutputPath: String? {
         storage.string(forKey: "GKPlaygroundOutputPath")
+    }
+
+    var playgroundTargetPlatform: String? {
+        storage.string(forKey: "GKPlaygroundTargetPlatform")
+    }
+
+    // MARK: -
+
+    var outputURL: FileURL? {
+        guard let value = playgroundOutputPath else { return nil }
+        return try? FileURL(path: value)
+    }
+
+    var targetPlatform: TargetPlatform? {
+        guard let value = playgroundTargetPlatform else { return nil }
+        return TargetPlatform(argument: value)
     }
 }
 
