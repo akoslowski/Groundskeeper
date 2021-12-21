@@ -32,13 +32,11 @@ struct Create: ParsableCommand {
 
     func run() throws {
         let outputURL: FileURL = try {
-            if CommandLine.arguments.contains("--output-path") { return nil }
-            return Defaults()?.outputURL
+            CommandLine.arguments.contains("--output-path") ? nil : Defaults()?.outputURL
         }() ?? FileURL(path: outputPath)
 
         let _targetPlatform = {
-            if CommandLine.arguments.contains("--target-platform") { return nil }
-            return Defaults()?.targetPlatform
+            CommandLine.arguments.contains("--target-platform") ? nil : Defaults()?.targetPlatform
         }() ?? targetPlatform
 
         let targetURL = try Groundskeeper(
