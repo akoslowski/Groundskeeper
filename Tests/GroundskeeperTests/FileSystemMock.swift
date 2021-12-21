@@ -39,7 +39,7 @@ final class FileSystemMock: FileSystemInteracting, FileSystemDirectoryProviding 
     var events: [Event] = []
 
     func createDirectoryURL(at index: Int) throws -> URL {
-        let event = try event(at: index)
+        let event = try eventAt(index)
         switch event {
         case .createDirectory(let url): return url
         case .createFile, .removeItem: throw FileSystemMockError.unexpectedEvent(event)
@@ -47,7 +47,7 @@ final class FileSystemMock: FileSystemInteracting, FileSystemDirectoryProviding 
     }
 
     func createFileURL(at index: Int) throws -> URL {
-        let event = try event(at: index)
+        let event = try eventAt(index)
         switch event {
         case .createDirectory, .removeItem: throw FileSystemMockError.unexpectedEvent(event)
         case .createFile(let url, _): return url
@@ -55,7 +55,7 @@ final class FileSystemMock: FileSystemInteracting, FileSystemDirectoryProviding 
     }
 
     func createFileData(at index: Int) throws -> Data? {
-        let event = try event(at: index)
+        let event = try eventAt(index)
         switch event {
         case .createDirectory, .removeItem: throw FileSystemMockError.unexpectedEvent(event)
         case .createFile(_, let data): return data
@@ -63,14 +63,14 @@ final class FileSystemMock: FileSystemInteracting, FileSystemDirectoryProviding 
     }
 
     func removeItem(at index: Int) throws -> URL {
-        let event = try event(at: index)
+        let event = try eventAt(index)
         switch event {
         case .createDirectory, .createFile: throw FileSystemMockError.unexpectedEvent(event)
         case .removeItem(let url): return url
         }
     }
 
-    func event(at index: Int) throws -> Event {
+    func eventAt(_ index: Int) throws -> Event {
         if events.isEmpty { throw FileSystemMockError.noEvents }
 
         guard (0..<events.endIndex).contains(index) else {
