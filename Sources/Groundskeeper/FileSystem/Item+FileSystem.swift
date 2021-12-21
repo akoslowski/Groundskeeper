@@ -1,6 +1,7 @@
 import Foundation
 
 extension FileSystem.Item {
+    /// Recursively creates directories and files at the given root URL
     func create(at root: URL, fileSystem: FileSystemInteracting) throws {
         switch self {
         case .file(let file):

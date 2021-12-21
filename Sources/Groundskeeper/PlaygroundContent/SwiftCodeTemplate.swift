@@ -11,47 +11,59 @@ public enum SourceCodeTemplate {
             return try contentProvider(url)
 
         case (.swift, _):
-            return Data("""
-            import Foundation
-
-            let greeting = "Hello, playground"
-            """.utf8)
+            return Data(swiftTemplate.utf8)
 
         case (.swiftUI, .ios):
-            return Data(#"""
-            import SwiftUI
-            import PlaygroundSupport
+            return Data(iOSSwiftUITemplate.utf8)
 
-            struct DemoView: View {
-                let name: String
-
-                var body: some View {
-                    Text("Hello \(name)")
-                        .font(.largeTitle)
-                        .padding()
-                }
-            }
-
-            PlaygroundPage.current.liveView = UIHostingController(rootView: DemoView(name: "Paula"))
-            """#.utf8)
         case (.swiftUI, .macos):
-            return Data(#"""
-            import SwiftUI
-            import PlaygroundSupport
+            return Data(macOSSwiftUITemplate.utf8)
+        }
+    }
+}
 
-            struct DemoView: View {
-                let name: String
+var swiftTemplate: String {
+    """
+    import Foundation
 
-                var body: some View {
-                    Text("Hello \(name)")
-                        .font(.largeTitle)
-                        .padding()
-                }
-            }
+    let greeting = "Hello, playground"
+    """
+}
 
-            PlaygroundPage.current.liveView = NSHostingController(rootView: DemoView(name: "Paula"))
-            """#.utf8)
+var iOSSwiftUITemplate: String {
+    #"""
+    import SwiftUI
+    import PlaygroundSupport
+
+    struct DemoView: View {
+        let name: String
+
+        var body: some View {
+            Text("Hello \(name)")
+                .font(.largeTitle)
+                .padding()
         }
     }
 
+    PlaygroundPage.current.liveView = UIHostingController(rootView: DemoView(name: "Paula"))
+    """#
+}
+
+var macOSSwiftUITemplate: String {
+    #"""
+    import SwiftUI
+    import PlaygroundSupport
+
+    struct DemoView: View {
+        let name: String
+
+        var body: some View {
+            Text("Hello \(name)")
+                .font(.largeTitle)
+                .padding()
+        }
+    }
+
+    PlaygroundPage.current.liveView = NSHostingController(rootView: DemoView(name: "Paula"))
+    """#
 }

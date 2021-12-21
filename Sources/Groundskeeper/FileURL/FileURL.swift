@@ -1,6 +1,6 @@
 import Foundation
 
-/// Explicit wrapper for URL with a file:// scheme. ``FileURL`` provides convenience for convenience URLs starting with `~/` , `.` or `./` ensuring the expected behaviour.
+/// Wrapper for URLs with a `file://` scheme. ``FileURL`` provides convenience for URLs starting with `~/` , `.` or `./` ensuring the expected behaviour.
 public struct FileURL: CustomDebugStringConvertible {
 
     /// Foundation.URL containing the absolute URL to a file
