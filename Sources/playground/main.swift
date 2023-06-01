@@ -30,6 +30,9 @@ struct Create: ParsableCommand {
     @Option(help: "Target platform for the new playground. Options are 'ios' or 'macos'")
     var targetPlatform: TargetPlatform = .macos
 
+    @Flag(name: .long, help: "Create a playground within a package")
+    var packaged: Bool = false
+
     func run() throws {
         let outputURL: FileURL = try {
             CommandLine.arguments.contains("--output-path") ? nil : Defaults()?.outputURL
@@ -39,16 +42,28 @@ struct Create: ParsableCommand {
             CommandLine.arguments.contains("--target-platform") ? nil : Defaults()?.targetPlatform
         }() ?? targetPlatform
 
-        let targetURL = try Groundskeeper(
+        let groundskeeper = Groundskeeper(
             fileSystem: FileManager.default,
             fileContentProvider: fileContentProvider
         )
-            .createPlayground(
+
+        let targetURL: URL
+
+        if packaged {
+            targetURL = try groundskeeper.createPackagePlayground(
                 with: name,
                 outputURL: outputURL,
                 targetPlatform: _targetPlatform,
                 sourceCodeTemplate: template
             )
+        } else {
+            targetURL = try groundskeeper.createPlayground(
+                with: name,
+                outputURL: outputURL,
+                targetPlatform: _targetPlatform,
+                sourceCodeTemplate: template
+            )
+        }
 
         if xed { openWithXcode(targetURL) }
 

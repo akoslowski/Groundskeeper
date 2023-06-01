@@ -92,4 +92,33 @@ public struct Groundskeeper {
 
         return rootURL
     }
+
+    /// Creates a new package playground with a single page
+    ///
+    /// - Parameters:
+    ///   - name: Name of the new playground; defaults to a random name
+    ///   - outputURL: URL to the directory where the playground will be stored
+    /// - Returns: URL to the new playground
+    public func createPackagePlayground(
+        with name: String?,
+        outputURL: FileURL,
+        targetPlatform: TargetPlatform,
+        sourceCodeTemplate: SourceCodeTemplate
+    ) throws -> URL {
+        let playgroundName = name ?? randomName(.capitalizedCamelCased)
+        let rootURL = outputURL.url
+
+        let playground = try makePackagePlayground(
+            playgroundName,
+            pageName: "First Page",
+            targetPlatform: targetPlatform,
+            sourceCodeTemplate: sourceCodeTemplate,
+            contentProvider: fileContentProvider
+        )
+        try playground.create(at: rootURL, fileSystem: fileSystem)
+
+        let playgroundRoot = rootURL.appendingPathComponent(playground.name)
+        return playgroundRoot
+    }
+
 }
